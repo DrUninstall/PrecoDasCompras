@@ -1,0 +1,648 @@
+.simulador-container {
+  max-width: 100%;
+  background-color: #fcfcfc;
+  box-shadow: 4px 16px 32px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  margin: 120px auto;
+  border-radius: 8px;
+  box-sizing: border-box; /* Ensure padding doesn't affect total width */
+}
+
+body {
+  background-color: #f5f6fa;
+  color: #636981;
+  font-family: 'Raleway', sans-serif;
+  font-size: 16px;
+}
+
+/* Fazer com que números usem a fonte Lato e não Raleway */
+body *:is(p, span, div, h1, h2, h3, h4, h5, h6) {
+  font-family: 'Lato', sans-serif;
+}
+
+h1 {
+  color: #db3d2d;
+  font-size: 40px;
+  line-height: 48px;
+  font-weight: bold;
+}
+
+h2 {
+  color: #26538e!important;
+  font-size: 24px!important;
+  line-height: 32px!important;
+}
+
+h3 {
+  color: #26538e !important;
+  font-size: 20px !important;
+  line-height: 28px !important;
+}
+
+h4 {
+  color: #6ba7ed; !important;
+  font-size: 20px !important;
+  line-height: 28px !important;
+}
+
+.small-notice {
+  font-size: 14px;
+  line-height: 20px;
+  padding-bottom: 32px;
+}
+
+label {
+  display: block;
+  margin: 16px 0;
+  line-height: 24px;
+  font-weight: 400;
+  font-size:16px;
+}
+
+input[type="number"], select, button {
+  height: 48px;
+  line-height: 24px;
+  padding: 12px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+input[type="number"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #8e92ae;
+  border-radius: 8px;
+  font-family: 'Raleway', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  transition: background-color 0.2s, border-color 0.2s;
+  margin-top: 24px;
+  /* Distance between input and label */
+}
+
+input[type="number"]:hover {
+  background-color: #f5f6fa;
+}
+
+input[type="number"]:active {
+  background-color: #e7e8f0;
+}
+
+input[type="number"]:focus {
+  outline: 2px;
+  border-color: #6ba7ed;
+  background-color: white;
+  border-width: 2px;
+}
+
+select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #8e92ae;
+  border-radius: 8px;
+  font-family: 'Raleway', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  transition: background-color 0.2s, border-color 0.2s;
+  margin-top: 4px;
+  /* Distance between select box and label */
+  background-color: white;
+  /* Default background for select */
+  appearance: none;
+  /* Remove default dropdown styling */
+}
+
+select:hover {
+  background-color: #f5f6fa;
+}
+
+select:active {
+  background-color: #e7e8f0;
+}
+
+select:focus {
+  outline: none;
+  border-color: #6ba7ed;
+  border-width: 2px;
+  background-color: white;
+}
+
+select option[disabled] {
+  color: #b0b0b0;
+  /* Gray out the disabled options */
+  font-style: italic;
+}
+
+
+.valor {
+  font-family: 'Lato', monospace;
+  font-weight: bold;
+}
+
+.input-segmented-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  height: auto;
+  flex-wrap: wrap;
+}
+
+.input-segmented-container input[type="number"] {
+  flex: 1;
+  margin: 0;
+}
+
+.segmented-button {
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #dfe3eb;
+  background-color: #f9fafc;
+  height: 48px;
+  width: fit-content;
+  padding: 0;
+  margin: 0;
+  box-shadow: 0px 2px 4px -2px rgba(0, 0, 0, 0.08), 0px 4px 8px -2px rgba(0, 0, 0, 0.04);
+}
+
+.segmented-button input[type="radio"] {
+  display: none;
+}
+
+.segmented-button label {
+  flex: 1;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  margin: 0;
+  background-color: #ffffff;
+  color: #2b2e4a;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 16px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.segmented-button label:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.segmented-button label:last-child {
+  border-radius: 0 8px 8px 0;
+}
+
+.segmented-button label.active {
+  background-color: #eef1f4;
+  color: #000000;
+}
+
+.segmented-button input[type="radio"]:checked+label {
+  background-color: #51aaee;
+  color: white;
+}
+
+.segmented-button label:not(.active):hover {
+  background-color: #eef1f4;
+}
+
+/* Style for the input range slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  /* Remove default styling in Webkit browsers */
+  width: 100%;
+  height: 8px;
+  /* Height of the slider track */
+  background-color: #e7e8f0;
+  /* Unfilled track color */
+  border-radius: 4px;
+  /* Rounded corners for the slider track */
+  outline: none;
+  margin-top: 4px;
+  transition: background-color 0.3s ease;
+}
+
+/* Custom track styling */
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 8px;
+  background: linear-gradient(to right, #35518d 0%, #35518d var(--range-percent), #e7e8f0 var(--range-percent), #e7e8f0 100%);
+  border-radius: 4px;
+}
+
+input[type="range"]::-moz-range-track {
+  height: 8px;
+  background-color: #e7e8f0;
+  border-radius: 4px;
+}
+
+input[type="range"]::-ms-track {
+  height: 8px;
+  background-color: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+
+input[type="range"]::-moz-range-progress {
+  background-color: #35518d;
+  /* Filled portion color */
+}
+
+input[type="range"]::-ms-fill-lower {
+  background-color: #35518d;
+  /* Filled portion color */
+}
+
+/* Thumb (handler) styling */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px;
+  /* Updated thumb size */
+  height: 24px;
+  /* Updated thumb size */
+  background-color: #ffffff;
+  /* Color of the thumb */
+  border: 2px solid #6ba7ed;
+  /* Stroke/outline around the thumb */
+  border-radius: 50%;
+  /* Make the thumb circular */
+  cursor: pointer;
+  margin-top: -8px;
+  /* Center the thumb vertically with the track */
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  background-color: #ffffff;
+  border: 2px solid #6ba7ed;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+input[type="range"]::-ms-thumb {
+  width: 24px;
+  height: 24px;
+  background-color: #ffffff;
+  border: 2px solid #6ba7ed;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Dynamic fill for Webkit browsers */
+input[type="range"]:focus::-webkit-slider-runnable-track {
+  background: linear-gradient(to right, #35518d 0%, #35518d var(--range-percent), #e7e8f0 var(--range-percent), #e7e8f0 100%);
+}
+
+#simular {
+  width: 100%;
+  height: 48px;
+  line-height: 24px;
+  background-color: #35518d;
+  color: #ffffff;
+  padding: 12px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 20px;
+  font-size: 16px;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 700;
+  box-shadow:
+      0px 2px 4px -2px rgba (0, 0, 0, 0.8),
+      0px 4px 8px -2px rgba (0, 0, 0, 0.4);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+#simular:hover {
+  background-color: #6ba7ed;
+}
+
+#resultados {
+  margin-top: 24px;
+  padding: 0;
+  border: 2px solid #6ba7ed;
+  border-radius: 8px;
+  box-shadow: 4px 16px 32px rgba(0, 0, 0, 0.1);
+}
+
+#resultados h3 {
+  color: #db3d2d;
+}
+
+#numDependentes {
+  font-weight: bold;
+}
+
+.resultados-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  padding: 32px;
+  box-sizing: border-box;
+}
+
+.label-indent {
+  margin-left: 40px;
+}
+
+.resultado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.resultados-texto {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.resultados-texto p {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+  padding: 24px 0;
+  border-bottom: 1px solid #8e92ae;
+}
+
+.resultados-texto p:last-child {
+  border-bottom: none;
+}
+
+.resultados-texto .label {
+  flex: 1;
+  text-align: left;
+}
+
+.resultados-texto .valor {
+  text-align: right;
+  font-family: 'Lato', sans-serif;
+}
+
+.dot {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-right: 16px;
+}
+
+.dot-salario-bruto {
+  background-color: #ffffff;
+  border: 1px solid #000000;
+}
+
+.dot-salario-liquido {
+  background-color: #26538e;
+}
+
+.dot-segurança-social {
+  background-color: #ff6b6b;
+}
+
+.dot-irs {
+  background-color: #db3d2d;
+}
+
+.dot-salario-liquido-il {
+  background-color:#51aaee;
+}
+
+.graficos {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+
+
+
+#graficoAnual, #graficoMensal {
+  height: 60px !important;
+}
+
+#graficoAnualLiberal, #graficoMensalLiberal {
+  height: 48px !important;
+}
+
+canvas {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 120px;
+  /* Adjust height to fit the bars */
+}
+
+.icon {
+  height: 20px;
+  display: flex;
+  margin-right: 8px;
+}
+
+.author-badge {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  background-color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  z-index: 999;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.author-badge:hover {
+  background-color: #f5f6fa;
+}
+
+.author-badge a {
+  color: #6a0dad;
+  font-size: 16px;
+  line-height: 1;
+  /* Adjust line height to eliminate extra spacing */
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.author-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.price-table {
+  margin-top: 20px;
+}
+
+.price-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.price-table th,
+.price-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.price-table th {
+  background-color: #f4f4f4;
+}
+
+#chart-container {
+  margin-top: 24px;
+}
+
+#price-chart {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 90px;
+  max-height: 512px;
+}
+
+#productSelect {
+  margin-top: 10px;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+
+
+/* Desktop and Tablet Screens */
+@media screen and (min-width: 1024px) {
+  .simulador-container {
+    max-width: 720px; /* Ensure there's 120px margin on each side */
+  }
+}
+
+
+
+
+/* Small Tablets and Mobile Screens */
+@media screen and (max-width: 1024px) {
+  .simulador-container {
+    padding: 0 16px;
+    margin: 0;
+    width: 100%;
+  }
+
+  .input-segmented-container,
+  #simular {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  input[type="number"],
+  .segmented-button,
+  select,
+  button {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  #resultados {
+    overflow-x: auto;
+    border: none;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  .resultados-container {
+    width: auto;
+    padding: 16px;
+    margin: 0;
+  }
+
+  .resultado {
+    flex: 1 1 100%;
+    margin: 10px 0;
+  }
+
+  .author-avatar {
+    display: none;
+  }
+}
+
+/* Very Small Screens */
+@media screen and (max-width: 480px) {
+  body {
+    padding: 0;
+    margin: 0;
+  }
+  .simulador-container {
+    width: 100vw;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    background-color: #fcfcfc;
+    box-shadow: none;
+  }
+
+  .resultados-container {
+    background-color: #ffffff;
+    padding: 8px;
+  }
+  .formulario {
+    background-color: #ffffff;
+    padding: 8px;
+  }
+
+
+  .resultados-texto {
+    margin: 0;
+  }
+
+  .dot {
+    width: 16px;
+    height: 16px;
+  }
+
+  .author-badge {
+    padding: 8px 8px;
+    border-radius: 16px;
+  }
+
+  .author-badge a {
+    font-size: 14px;
+  }
+
+  .author-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
+
+  h1 {
+    color: #db3d2d !important;
+    font-size: 24px !important;
+    line-height: 32px !important;
+  }
+
+
+}
+

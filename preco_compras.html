@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preço das Compras</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Preço das Compras</h1>
+    <p>Acompanhe as variações de preços dos principais produtos ao longo do tempo.</p>
+
+    <!-- Product Selector -->
+    <label for="productSelect">Selecionar Produto:</label>
+    <select id="productSelect" onchange="updateData()">
+      <option value="all">Soma dos Preços</option>
+      <option value="arroz">Arroz Carolino</option>
+      <option value="massa">Massa Esparguete</option>
+      <!-- Add more options as needed -->
+    </select>
+
+    <!-- Toggle between Price per Unit and Price per Kilogram -->
+    <label for="priceTypeSelect">Selecionar Tipo de Preço:</label>
+    <select id="priceTypeSelect" onchange="updateData()">
+      <option value="price">Preço por Unidade</option>
+      <option value="pricePerKg">Preço por Quilograma</option>
+    </select>
+
+
+    <!-- Chart for Price History -->
+    <div id="chart-container">
+      <canvas id="price-chart"></canvas>
+    </div>
+
+    <!-- Table for Current and Historical Prices -->
+    <div class="price-table">
+      <h2>Detalhes de Preço</h2>
+      <table id="price-details">
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th>Preço Atual</th>
+            <th>Diferença em relação ao mês passado</th>
+            <th>Diferença em relação ao trimestre anterior</th>
+            <th>Diferença em relação ao ano passado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Data will be populated dynamically -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="authorBadge" class="author-badge">
+    <a href="https://x.com/mbatalhamusic" target="_blank">
+      <img id="authorAvatar" class="author-avatar" alt="Miguel Batalha" />
+      <span>by Miguel Batalha</span>
+    </a>
+  </div>
+  </div>
+
+  <script src="arroz_price_history.js"></script>
+  <script src="massa_price_history.js"></script>
+  <script src="preco_compras.js"></script>
+</body>
+
+</html>
