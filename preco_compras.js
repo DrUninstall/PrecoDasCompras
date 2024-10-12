@@ -160,7 +160,6 @@ function calculateDifference(current, previous) {
 
 
 
-// Function to update the chart with product price history
 function updateChart(data, priceType) {
   const ctx = document.getElementById("price-chart").getContext("2d");
   const chartData = data.priceHistory.map(entry => entry[priceType]); // Use price or pricePerKg
@@ -189,7 +188,11 @@ function updateChart(data, priceType) {
           label: `${data.name} - ${priceType === 'price' ? 'Preço por Unidade (€)' : 'Preço por Quilograma (€)'}`,
           data: chartData,
           borderColor: "rgba(75, 192, 192, 1)",
-          borderWidth: 2,
+          borderWidth: 3,
+          pointRadius: 0,
+          pointHoverRadius: 5,
+          hitRadius: 16,
+          hoverBackgroundColor: "rgba(75, 192, 192, 0.8)",
           fill: false
         },
         {
@@ -197,7 +200,10 @@ function updateChart(data, priceType) {
           data: trendlineData,
           borderColor: "rgba(255, 99, 132, 0.8)",
           borderDash: [5, 5],
-          borderWidth: 2,
+          borderWidth: 3,
+          pointRadius: 0,
+          pointHoverRadius: 0,
+          hitradius: 0,
           fill: false
         }
       ]
@@ -205,13 +211,76 @@ function updateChart(data, priceType) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false // Desabilitar a legenda padrão
+        },
+        tooltip: {
+          intersect: false, // Tooltip será exibido mesmo se o cursor não estiver exatamente na linha
+          mode: 'index' // Mostrar tooltip baseado no eixo X para todos os datasets, simplificando a interação
+        }
+      },
       scales: {
-        x: { title: { display: true, text: "Data" } },
-        y: { title: { display: true, text: "Preço (€)" } }
+        x: {
+          title: { display: false, text: "Data" },
+          ticks: {
+            autoSkip: true,
+            maxRotation: 45, // Rotate the labels to avoid overlap
+            minRotation: 0,
+          }
+        },
+        y: {
+          title: { display: false, text: "Preço (€)" },
+          beginAtZero: true, // Start y-axis at zero for better visual comparison
+          grace: '33%' // Add extra space above the highest point for better visualization
+        }
+      },
+      layout: {
+        padding: {
+          top: 20,
+          right: 20,
+          bottom: 20,
+          left: 20
+        }
+      },
+      hover: {
+        mode: 'nearest',
+        intersect: false
       }
     }
   });
+
+  // Create custom legend using the .dot class
+  const chartContainer = document.getElementById("chart-container");
+  const customLegendContainer = document.createElement("div");
+  customLegendContainer.classList.add("custom-legend");
+
+  window.priceChart.data.datasets.forEach((dataset) => {
+    const legendItem = document.createElement("div");
+    legendItem.classList.add("legend-item");
+
+    const dot = document.createElement("span");
+    dot.classList.add("dot");
+    dot.style.backgroundColor = dataset.borderColor;
+
+    const label = document.createElement("span");
+    label.textContent = dataset.label;
+
+    legendItem.appendChild(dot);
+    legendItem.appendChild(label);
+    customLegendContainer.appendChild(legendItem);
+  });
+
+  // Remove any existing custom legend before appending
+  const existingLegend = chartContainer.querySelector(".custom-legend");
+  if (existingLegend) {
+    existingLegend.remove();
+  }
+  chartContainer.appendChild(customLegendContainer);
 }
+
+
+
 
 
 // Call the function on page load
