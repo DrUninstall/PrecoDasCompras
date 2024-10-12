@@ -67,9 +67,10 @@ function displayPriceHistory(productKey) {
 // Function to update chart and table based on selected product
 function updateData() {
   const productSelect = document.getElementById("productSelect");
-  const priceTypeSelect = document.getElementById("priceTypeSelect"); // Get the selected price type
   const selectedProduct = productSelect.value;
-  const selectedPriceType = priceTypeSelect.value; // Use this to determine which price to use
+
+  // Obter o valor selecionado dos botões de rádio
+  const selectedPriceType = document.querySelector('input[name="priceType"]:checked').value;
 
   let data;
   if (selectedProduct === "all") {
@@ -78,9 +79,10 @@ function updateData() {
     data = priceData[selectedProduct];
   }
 
-  updateChart(data, selectedPriceType); // Pass the selected price type
+  updateChart(data, selectedPriceType); // Passar o tipo de preço selecionado
   updateTable(data);
 }
+
 
 // Fill missing prices/dates
 function forwardFill(history) {
