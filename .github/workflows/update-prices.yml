@@ -1,0 +1,35 @@
+name: Update Prices Daily
+
+# Run this job daily at midnight UTC (adjust as needed)
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  update-prices:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run the price fetch script
+        run: node fetch_continente_prices.js
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.name "GitHub Action"
+          git config --local user.email "action@github.com"
+          git add .
+          git commit -m "Daily price update $(date +'%Y-%m-%d')"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
