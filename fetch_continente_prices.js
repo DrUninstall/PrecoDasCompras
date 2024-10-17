@@ -4,6 +4,13 @@ const puppeteer = require('puppeteer');
 
 const arrozUrl = 'https://www.continente.pt/produto/arroz-carolino-continente-4738050.html';
 const massaUrl = 'https://www.continente.pt/produto/massa-esparguete-continente-5254224.html';
+const azeiteUrl = 'https://www.continente.pt/produto/azeite-virgem-extra-classico-oliveira-da-serra-2014566.html';
+const bolachasUrl = 'https://www.continente.pt/produto/bolachas-maria-continente-6715842.html';
+const feijaoUrl = 'https://www.continente.pt/produto/feijao-manteiga-cozido-continente-2859483.html';
+const leiteUrl = 'https://www.continente.pt/produto/leite-uht-meio-gordo-mimosa-2210946.html';
+const manteigaUrl = 'https://www.continente.pt/produto/manteiga-com-sal-mimosa-2211084.html';
+const paoUrl = 'https://www.continente.pt/produto/carcaca-portuguesa-7371774.html';
+const queijoUrl = 'https://www.continente.pt/produto/queijo-flamengo-fatiado-continente-6184775.html';
 const today = new Date().toISOString().split('T')[0]; // Format YYYY-MM-DD
 
 async function fetchProductPrice(url) {
@@ -44,11 +51,20 @@ async function updatePriceHistory(productKey, productPrice) {
 }
 
 async function main() {
-  const arrozPrice = await fetchProductPrice(arrozUrl);
-  const massaPrice = await fetchProductPrice(massaUrl);
+  const azeitePrice = await fetchProductPrice(azeiteUrl);
+  const bolachasPrice = await fetchProductPrice(bolachasUrl);
+  const feijaoPrice = await fetchProductPrice(feijaoUrl);
+  const leitePrice = await fetchProductPrice(leiteUrl);
+  const manteigaPrice = await fetchProductPrice(manteigaUrl);
+  const paoPrice = await fetchProductPrice(paoUrl);
+  const queijoPrice = await fetchProductPrice(queijoUrl);
 
-  if (arrozPrice) await updatePriceHistory('arroz', arrozPrice);
-  if (massaPrice) await updatePriceHistory('massa', massaPrice);
+  if (azeitePrice) await updatePriceHistory('azeite', azeitePrice);
+  if (bolachasPrice) await updatePriceHistory('bolachas', bolachasPrice);
+  if (feijaoPrice) await updatePriceHistory('feijao', feijaoPrice);
+  if (leitePrice) await updatePriceHistory('leite', leitePrice);
+  if (manteigaPrice) await updatePriceHistory('manteiga', manteigaPrice);
+  if (paoPrice) await updatePriceHistory('pao', paoPrice);
+  if (queijoPrice) await updatePriceHistory('queijo', queijoPrice);
 }
-
 main().catch(console.error);

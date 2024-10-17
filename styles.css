@@ -364,25 +364,73 @@ canvas {
   box-sizing: border-box;
 }
 
+/* Table container styling */
 .price-table {
   margin-top: 20px;
+  border-radius: 8px;
+  /* Rounded corners */
+  overflow: hidden;
+  /* Ensures rounded corners apply to the entire table */
 }
 
 .price-table table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  /* Allows rounded corners */
+  border-spacing: 0;
+  border-radius: 8px;
+  /* Rounded corners */
 }
 
-.price-table th,
-.price-table td {
-  padding: 10px;
-  border: 1px solid #ddd;
-  text-align: left;
-}
-
+/* General table row styling for td and th */
+.price-table td,
 .price-table th {
+  border: 1px solid #e6e8ef;
+  /* Grid dividers */
+  padding: 0 24px;
+  /* Horizontal padding */
+  color: #585f78;
+  text-align: right;
+  /* Right-align all content by default */
+}
+
+/* General table row height for td */
+.price-table td {
+  height: 80px;
+  /* Regular row height */
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: normal;
+  /* Regular text weight */
+}
+
+/* Header row styling */
+.price-table th {
+  height: 48px;
+  /* Header row height */
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: bold;
+  /* Bold text */
   background-color: #f4f4f4;
 }
+
+/* First column specific styling */
+.price-table td:first-child,
+.price-table th:first-child {
+  text-align: left;
+  /* Left-align the first column */
+  font-weight: bold;
+  /* Bold text */
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* Hover effect for table rows */
+.price-table tr:hover {
+  background-color: #f9fafc;
+}
+
 
 #chart-container {
   margin-top: 24px;
@@ -401,7 +449,7 @@ canvas {
 #productSelect {
   margin-top: 10px;
   padding: 8px;
-  border-radius: 5px;
+  border-radius: 8px;
   border: 1px solid #ddd;
   width: max-content;
 }

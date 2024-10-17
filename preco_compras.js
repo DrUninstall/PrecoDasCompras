@@ -8,15 +8,51 @@ window.addEventListener("DOMContentLoaded", async () => {
 const priceData = {
   "arroz": {
     name: "Arroz Carolino",
-    currentPrice: arrozPriceHistory[arrozPriceHistory.length - 1].price, // Use latest price
+    currentPrice: arrozPriceHistory[arrozPriceHistory.length - 1].price,
     priceHistory: arrozPriceHistory
   },
   "massa": {
     name: "Massa Esparguete",
-    currentPrice: massaPriceHistory[massaPriceHistory.length - 1].price, // Use latest price
+    currentPrice: massaPriceHistory[massaPriceHistory.length - 1].price,
     priceHistory: massaPriceHistory
+  },
+  "azeite": {
+    name: "Azeite Virgem Extra",
+    currentPrice: azeitePriceHistory[azeitePriceHistory.length - 1].price,
+    priceHistory: azeitePriceHistory
+  },
+  "bolachas": {
+    name: "Bolachas Maria",
+    currentPrice: bolachasPriceHistory[bolachasPriceHistory.length - 1].price,
+    priceHistory: bolachasPriceHistory
+  },
+  "feijao": {
+    name: "Feijão Manteiga",
+    currentPrice: feijaoPriceHistory[feijaoPriceHistory.length - 1].price,
+    priceHistory: feijaoPriceHistory
+  },
+  "leite": {
+    name: "Leite UHT Meio Gordo",
+    currentPrice: leitePriceHistory[leitePriceHistory.length - 1].price,
+    priceHistory: leitePriceHistory
+  },
+  "manteiga": {
+    name: "Manteiga com Sal",
+    currentPrice: manteigaPriceHistory[manteigaPriceHistory.length - 1].price,
+    priceHistory: manteigaPriceHistory
+  },
+  "pao": {
+    name: "Carcaça Portuguesa",
+    currentPrice: paoPriceHistory[paoPriceHistory.length - 1].price,
+    priceHistory: paoPriceHistory
+  },
+  "queijo": {
+    name: "Queijo Flamengo Fatiado",
+    currentPrice: queijoPriceHistory[queijoPriceHistory.length - 1].price,
+    priceHistory: queijoPriceHistory
   }
 };
+
 
 
 function displayPriceHistory(productKey) {
@@ -129,18 +165,52 @@ function calculateTotalPriceForChart(priceType) {
     priceHistory: [],
   };
 
-  const historyLength = Math.min(...products.map(product => product.priceHistory.length));
-  for (let i = 0; i < historyLength; i++) {
-    const date = products[0].priceHistory[i].date;
-    
-    // Use price or pricePerKg based on selected priceType
-    const totalPrice = products.reduce((sum, product) => sum + (product.priceHistory[i]?.[priceType] || 0), 0);
-    
-    totalData.priceHistory.push({ date, [priceType]: totalPrice });
-  }
+  // Get unique dates from all products' histories
+  const allDates = [...new Set(products.flatMap(product => product.priceHistory.map(entry => entry.date)))];
+  allDates.sort(); // Sort dates in ascending order
+
+  allDates.forEach(date => {
+    let totalPrice = 0;
+    let validProductCount = 0;
+
+    products.forEach(product => {
+      // Find the price entry for this date
+      let priceEntry = product.priceHistory.find(entry => entry.date === date);
+
+      // If no price for this date, try to find a previous price
+      if (!priceEntry) {
+        const previousEntry = product.priceHistory
+          .slice()  // Clone array for safe sorting
+          .reverse()
+          .find(entry => entry.date < date);
+
+        if (previousEntry) {
+          priceEntry = previousEntry;
+        } else {
+          // No previous price, find the next available price in the future
+          const nextEntry = product.priceHistory.find(entry => entry.date > date);
+          if (nextEntry) {
+            priceEntry = nextEntry;
+          }
+        }
+      }
+
+      if (priceEntry) {
+        totalPrice += priceEntry[priceType];
+        validProductCount++; // Count products with valid prices
+      }
+    });
+
+    if (validProductCount > 0) {
+      // Push the total price for this date
+      totalData.priceHistory.push({ date, [priceType]: totalPrice });
+    }
+  });
 
   return totalData;
 }
+
+
 
 // Helper function to calculate percentage difference
 function calculateDifference(current, previous) {

@@ -2750,4 +2750,3 @@ const arrozPriceHistory = [
     "pricePerKg": 1.25
   }
 ];
-module.exports = arrozPriceHistory;

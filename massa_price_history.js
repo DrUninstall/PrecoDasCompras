@@ -1900,4 +1900,3 @@ const massaPriceHistory = [
     "pricePerKg": 1.5
   }
 ];
-module.exports = massaPriceHistory;
