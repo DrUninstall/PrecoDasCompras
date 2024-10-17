@@ -1,35 +1,8 @@
-// Call the function on page load
+// Calls on page load
 window.addEventListener("DOMContentLoaded", async () => {
-  await fetchAndUpdatePrices(); // Fetch prices before updating data
   updateTableHeaders();  // Update headers with dynamic values
   updateData();          // Call existing updateData function to load prices
 });
-
-// Fetching latest prices
-async function fetchAndUpdatePrices() {
-  try {
-    const arrozPrice = await fetchArrozCarolinoPrice();
-    const massaPrice = await fetchMassaEsparguetePrice();
-
-    if (arrozPrice) {
-      priceData["arroz"].currentPrice = arrozPrice.price;
-      priceData["arroz"].pricePerKg = arrozPrice.pricePerKg;
-    }
-
-    if (massaPrice) {
-      priceData["massa"].currentPrice = massaPrice.price;
-      priceData["massa"].pricePerKg = massaPrice.pricePerKg;
-    }
-
-    console.log("Updated Prices:");
-    console.log("Arroz Carolino - Current Price:", priceData["arroz"].currentPrice);
-    console.log("Massa Esparguete - Current Price:", priceData["massa"].currentPrice);
-
-  } catch (error) {
-    console.error("Error fetching current prices:", error);
-  }
-}
-
 
 // Example product data (replace with actual fetching logic)
 const priceData = {
@@ -76,21 +49,22 @@ function displayPriceHistory(productKey) {
 function updateData() {
   const productSelect = document.getElementById("productSelect");
   const selectedProduct = productSelect.value;
-
-  // Get the selected price type from the radio buttons
+  
   const selectedPriceType = document.querySelector('input[name="priceType"]:checked').value;
-
+  
   let data;
   if (selectedProduct === "all") {
-    data = calculateTotalPrice(selectedPriceType);
+    data = calculateTotalPriceForChart(selectedPriceType);
   } else {
     data = priceData[selectedProduct];
   }
 
   updateChart(data, selectedPriceType);
-  updateTable();
-}
 
+  // Use table-specific function for "Soma dos Preços" row
+  const totalDataForTable = calculateTotalForTable();
+  updateTable(totalDataForTable);
+}
 
 
 // Fill missing prices/dates
@@ -102,14 +76,11 @@ function forwardFill(history) {
   }
 }
 
-
-// Function to calculate the total price and history of all products
-function calculateTotalPrice(priceType) {
-  const products = Object.values(priceData);
+function calculateTotalForTable() {
+  const tableRows = document.querySelectorAll("#price-details tbody tr:not(.total-row)");
   const totalData = {
     name: "Soma dos Preços",
     currentPrice: 0,
-    priceHistory: [],
     historicalDifferences: {
       lastMonth: 0,
       threeMonthsAgo: 0,
@@ -117,45 +88,59 @@ function calculateTotalPrice(priceType) {
     }
   };
 
-  // Apply forwardFill to each product's price history
-  products.forEach(product => forwardFill(product.priceHistory));
+  let totalLastMonthDiff = 0;
+  let totalThreeMonthsAgoDiff = 0;
+  let totalLastYearDiff = 0;
+  let productCount = 0;
 
-  // Calculate total current price based on the latest fetched values
-  totalData.currentPrice = products.reduce((sum, product) => sum + product.currentPrice, 0);
+  tableRows.forEach(row => {
+    const currentPriceCell = row.querySelector(".currentPrice");
+    const lastMonthDiffCell = row.querySelector(".lastMonthDiff");
+    const threeMonthsAgoDiffCell = row.querySelector(".threeMonthsAgoDiff");
+    const lastYearDiffCell = row.querySelector(".lastYearDiff");
 
-  // Calculate total price history
-  const historyLength = Math.min(...products.map(product => product.priceHistory.length));
-  for (let i = 0; i < historyLength; i++) {
-    const date = products[0].priceHistory[i].date;
-    const totalPrice = products.reduce((sum, product) => sum + (product.priceHistory[i]?.price || 0), 0);
-    totalData.priceHistory.push({ date, price: totalPrice });
-  }
+    // Check if cells are found before attempting to access textContent
+    const currentPrice = currentPriceCell ? parseFloat(currentPriceCell.textContent.replace('€', '').trim()) || 0 : 0;
+    const lastMonthDiff = lastMonthDiffCell ? parseFloat(lastMonthDiffCell.textContent.replace('%', '').trim()) || 0 : 0;
+    const threeMonthsAgoDiff = threeMonthsAgoDiffCell ? parseFloat(threeMonthsAgoDiffCell.textContent.replace('%', '').trim()) || 0 : 0;
+    const lastYearDiff = lastYearDiffCell ? parseFloat(lastYearDiffCell.textContent.replace('%', '').trim()) || 0 : 0;
 
-  // Calculate historical differences based on individual product differences
-  const calculateAggregatedDifference = (indexDiff) => {
-    let totalDifference = 0;
-    let productCount = 0;
-    
-    products.forEach(product => {
-      const currentPrice = product.currentPrice;
-      const historicalPrice = product.priceHistory[historyLength - indexDiff - 1]?.price;
-      
-      if (historicalPrice && !isNaN(currentPrice) && !isNaN(historicalPrice)) {
-        totalDifference += ((currentPrice - historicalPrice) / historicalPrice) * 100;
-        productCount++;
-      }
-    });
+    totalData.currentPrice += currentPrice;
+    totalLastMonthDiff += lastMonthDiff;
+    totalThreeMonthsAgoDiff += threeMonthsAgoDiff;
+    totalLastYearDiff += lastYearDiff;
+    productCount++;
+  });
 
-    return productCount > 0 ? (totalDifference / productCount).toFixed(2) : "N/A";
-  };
-
-  totalData.historicalDifferences.lastMonth = historyLength > 1 ? calculateAggregatedDifference(1) : "N/A";
-  totalData.historicalDifferences.threeMonthsAgo = historyLength > 3 ? calculateAggregatedDifference(3) : "N/A";
-  totalData.historicalDifferences.lastYear = historyLength > 12 ? calculateAggregatedDifference(12) : "N/A";
+  totalData.historicalDifferences.lastMonth = productCount > 0 ? (totalLastMonthDiff / productCount).toFixed(2) : "N/A";
+  totalData.historicalDifferences.threeMonthsAgo = productCount > 0 ? (totalThreeMonthsAgoDiff / productCount).toFixed(2) : "N/A";
+  totalData.historicalDifferences.lastYear = productCount > 0 ? (totalLastYearDiff / productCount).toFixed(2) : "N/A";
 
   return totalData;
 }
 
+
+
+function calculateTotalPriceForChart(priceType) {
+  const products = Object.values(priceData);
+  const totalData = {
+    name: "Soma dos Preços",
+    currentPrice: 0,
+    priceHistory: [],
+  };
+
+  const historyLength = Math.min(...products.map(product => product.priceHistory.length));
+  for (let i = 0; i < historyLength; i++) {
+    const date = products[0].priceHistory[i].date;
+    
+    // Use price or pricePerKg based on selected priceType
+    const totalPrice = products.reduce((sum, product) => sum + (product.priceHistory[i]?.[priceType] || 0), 0);
+    
+    totalData.priceHistory.push({ date, [priceType]: totalPrice });
+  }
+
+  return totalData;
+}
 
 // Helper function to calculate percentage difference
 function calculateDifference(current, previous) {
@@ -338,34 +323,53 @@ function updateTable() {
     </tr>
   `;
 
-  // Calculate total current price for "Soma dos Preços"
-  const totalCurrentPrice = Object.values(priceData).reduce((sum, product) => sum + product.currentPrice, 0);
+  // Variables to track the sum of current prices and historical differences
+  let totalCurrentPrice = 0;
+  let totalLastMonthDiff = 0;
+  let totalThreeMonthsAgoDiff = 0;
+  let totalLastYearDiff = 0;
+  let productCount = 0;
 
-  // Create the row for "Soma dos Preços" first
-  tableBody.innerHTML += formatRow("Soma dos Preços", totalCurrentPrice, "-", "-", "-");
-
-  // Loop through each product and calculate differences for last month, last quarter, and same month last year
+  // Loop through each product and add the rows
   Object.keys(priceData).forEach(productKey => {
     const product = priceData[productKey];
     const currentPrice = product.currentPrice;
 
     // Fetch historical prices for comparison
     const history = product.priceHistory;
-    const lastMonth = history.length > 1 ? calculateDifference(currentPrice, history[history.length - 2].price) : "-";
-    const lastQuarter = history.length > 3 ? calculateDifference(currentPrice, history[history.length - 4].price) : "-";
+    const lastMonth = history.length > 1 ? calculateDifference(currentPrice, history[history.length - 2].price) : "N/A";
+    const lastQuarter = history.length > 3 ? calculateDifference(currentPrice, history[history.length - 4].price) : "N/A";
     const sameMonthLastYear = history.find(entry => {
       const entryDate = new Date(entry.date);
       const currentDate = new Date();
       return entryDate.getFullYear() === currentDate.getFullYear() - 1 && entryDate.getMonth() === currentDate.getMonth();
     })?.price;
+    const lastYearDifference = sameMonthLastYear ? calculateDifference(currentPrice, sameMonthLastYear) : "N/A";
 
-    const lastYearDifference = sameMonthLastYear ? calculateDifference(currentPrice, sameMonthLastYear) : "-";
+    // Convert percentage strings to numbers for summation
+    const lastMonthDiffValue = parseFloat(lastMonth) || 0;
+    const lastQuarterDiffValue = parseFloat(lastQuarter) || 0;
+    const lastYearDiffValue = parseFloat(lastYearDifference) || 0;
+
+    // Sum up current prices and percentage changes
+    totalCurrentPrice += currentPrice;
+    totalLastMonthDiff += lastMonthDiffValue;
+    totalThreeMonthsAgoDiff += lastQuarterDiffValue;
+    totalLastYearDiff += lastYearDiffValue;
+    productCount++;
 
     // Add the row for the current product
     tableBody.innerHTML += formatRow(product.name, currentPrice, lastMonth, lastQuarter, lastYearDifference);
   });
-}
 
+  // Calculate the average of the historical differences
+  const avgLastMonthDiff = productCount > 0 ? (totalLastMonthDiff / productCount).toFixed(2) : "N/A";
+  const avgThreeMonthsAgoDiff = productCount > 0 ? (totalThreeMonthsAgoDiff / productCount).toFixed(2) : "N/A";
+  const avgLastYearDiff = productCount > 0 ? (totalLastYearDiff / productCount).toFixed(2) : "N/A";
+
+  // Create the row for "Soma dos Preços" with calculated sums and averages
+  tableBody.innerHTML = formatRow("Soma dos Preços", totalCurrentPrice, avgLastMonthDiff, avgThreeMonthsAgoDiff, avgLastYearDiff) + tableBody.innerHTML;
+}
 
 
 // Helper function to calculate percentage difference
@@ -373,12 +377,6 @@ function calculateDifference(current, previous) {
     const difference = ((current - previous) / previous) * 100;
     return (difference >= 0 ? "+" : "") + difference.toFixed(2);
 }
-
-
-// Initialize the page with default data
-window.addEventListener("DOMContentLoaded", () => {
-  updateData();
-});
 
 // Helper function to get the previous month name
 function getPreviousMonthName() {
