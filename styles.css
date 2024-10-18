@@ -5,11 +5,6 @@ body {
   font-size: 16px;
 }
 
-/* Fazer com que números usem fonte diferente */
-body *:is(p, span, div, h1, h2, h3, h4, h5, h6) {
-  font-family: sans-serif;
-}
-
 h1 {
   color: #db3d2d;
   font-size: 40px;
@@ -147,7 +142,6 @@ select option[disabled] {
   border: 1px solid #dde0ea;
   background-color: #f9fafc;
   height: 48px;
-  margin-bottom: 24px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08), 0px 4px 8px rgba(0, 0, 0, 0.04);
 }
 
@@ -196,6 +190,10 @@ select option[disabled] {
   height: 32px;
   padding: 0;
   justify-content: flex-start;
+}
+
+.secondary-segmented-button-container {
+  margin-top: 24px;
 }
 
 /* Align the button container to the right */
@@ -434,12 +432,9 @@ canvas {
 .price-table td,
 .price-table th {
   border: 1px solid #e6e8ef;
-  /* Grid dividers */
   padding: 0 24px;
-  /* Horizontal padding */
   color: #585f78;
   text-align: right;
-  /* Right-align all content by default */
 }
 
 /* General table row height for td */
@@ -522,7 +517,6 @@ canvas {
 
   #chart-container {
     width: 100%;
-    max-width: 720px;
     height: auto;
     margin: 24px auto;
   }
@@ -581,7 +575,6 @@ canvas {
     box-sizing: border-box;
     box-shadow: none;
   }
-
 
 
   .dot {
