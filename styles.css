@@ -5,6 +5,50 @@ body {
   font-size: 16px;
 }
 
+/* Style for the fixed top banner */
+#fixedBanner {
+  position: relative;
+  top: 0;
+  width: 100%;
+  min-height: 70px;
+  background-color: #fcfcfc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  text-align: center;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+  box-sizing: border-box;
+  border-radius: 0 0 8px 8px;
+  font-family: 'Raleway', sans-serif;
+}
+
+#fixedBanner p {
+  font-size: 16px;
+  text-align: left;
+  color: #636981;
+}
+
+#fixedBanner .visit-button {
+  background-color: #FFFFFF;
+  color: #2b2e4a;
+  font-weight: 400;
+  border-radius: 8px;
+  border: 1px solid #8b93ac;
+  box-shadow:
+    0px 2px 4px rgba(0, 0, 0, 0.08),
+    0px 4px 8px rgba(0, 0, 0, 0.04);
+  text-decoration: none;
+  padding: 16px;
+}
+
+#fixedBanner .visit-button:hover {
+  background-color: #e6e8ef;
+  transition: background-color 0.3s;
+}
+
 h1 {
   color: #db3d2d;
   font-size: 40px;
