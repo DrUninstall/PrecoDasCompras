@@ -2,9 +2,10 @@
 window.addEventListener("DOMContentLoaded", async () => {
   updateTableHeaders();  // Update headers with dynamic values
   updateData();          // Call existing updateData function to load prices
+  updateTable();
 });
 
-// Example product data (replace with actual fetching logic)
+// product data
 const priceData = {
   "arroz": {
     name: "Arroz Carolino",
@@ -85,22 +86,28 @@ function displayPriceHistory(productKey) {
 function updateData() {
   const productSelect = document.getElementById("productSelect");
   const selectedProduct = productSelect.value;
-  
+
   const selectedPriceType = document.querySelector('input[name="priceType"]:checked').value;
-  
+  const selectedTimeInterval = document.querySelector('input[name="timeInterval"]:checked').value;
+
   let data;
   if (selectedProduct === "all") {
-    data = calculateTotalPriceForChart(selectedPriceType);
+    data = calculateTotalPriceForChart(selectedPriceType, selectedTimeInterval);
   } else {
-    data = priceData[selectedProduct];
+    data = calculateProductPriceForChart(selectedProduct, selectedPriceType, selectedTimeInterval);
   }
 
-  updateChart(data, selectedPriceType);
+  // Update the chart with the selected data
+  updateChart(data, selectedPriceType, selectedTimeInterval);
 
-  // Use table-specific function for "Soma dos Preços" row
-  const totalDataForTable = calculateTotalForTable();
-  updateTable(totalDataForTable);
+  // Update the table with current data and historical differences
+  updateTable(); // Refresh the table with updated data
+
+  // Highlight the selected row in the table based on the selected product
+  highlightSelectedRow(selectedProduct);
 }
+
+
 
 
 // Fill missing prices/dates
@@ -157,7 +164,7 @@ function calculateTotalForTable() {
 
 
 
-function calculateTotalPriceForChart(priceType) {
+function calculateTotalPriceForChart(priceType, timeInterval) {
   const products = Object.values(priceData);
   const totalData = {
     name: "Soma dos Preços",
@@ -169,47 +176,125 @@ function calculateTotalPriceForChart(priceType) {
   const allDates = [...new Set(products.flatMap(product => product.priceHistory.map(entry => entry.date)))];
   allDates.sort(); // Sort dates in ascending order
 
-  allDates.forEach(date => {
+  // Aggregate based on the selected time interval
+  const aggregatedData = aggregateDataByTimeInterval(allDates, products, priceType, timeInterval);
+
+  // Fill in the total data for chart display
+  totalData.priceHistory = aggregatedData;
+  
+  return totalData;
+}
+
+function calculateProductPriceForChart(productKey, priceType, timeInterval) {
+  const product = priceData[productKey];
+  const priceHistory = product.priceHistory;
+
+  // Aggregate based on the selected time interval
+  const aggregatedData = aggregateDataByTimeInterval(priceHistory.map(entry => entry.date), [product], priceType, timeInterval);
+
+  return {
+    name: product.name,
+    currentPrice: product.currentPrice,
+    priceHistory: aggregatedData,
+  };
+}
+
+function aggregateDataByTimeInterval(dates, products, priceType, timeInterval) {
+  const aggregatedData = [];
+  const dateFormat = timeInterval === "anual" ? "yyyy" :
+                     timeInterval === "mensal" ? "yyyy-MM" :
+                     timeInterval === "semanal" ? "yyyy-WW" : "yyyy-MM-dd"; // Format based on interval
+
+  const groupedDates = dates.reduce((groups, date) => {
+    const formattedDate = formatDate(date, timeInterval);
+    if (!groups[formattedDate]) {
+      groups[formattedDate] = [];
+    }
+    groups[formattedDate].push(date);
+    return groups;
+  }, {});
+
+  Object.keys(groupedDates).forEach(formattedDate => {
     let totalPrice = 0;
     let validProductCount = 0;
 
     products.forEach(product => {
-      // Find the price entry for this date
-      let priceEntry = product.priceHistory.find(entry => entry.date === date);
+      const relevantEntries = product.priceHistory.filter(entry => groupedDates[formattedDate].includes(entry.date));
 
-      // If no price for this date, try to find a previous price
-      if (!priceEntry) {
-        const previousEntry = product.priceHistory
-          .slice()  // Clone array for safe sorting
-          .reverse()
-          .find(entry => entry.date < date);
-
-        if (previousEntry) {
-          priceEntry = previousEntry;
-        } else {
-          // No previous price, find the next available price in the future
-          const nextEntry = product.priceHistory.find(entry => entry.date > date);
-          if (nextEntry) {
-            priceEntry = nextEntry;
-          }
+      // If no relevant entries, look for the closest previous or next price
+      if (relevantEntries.length === 0) {
+        const previousPrice = findPreviousPrice(product.priceHistory, groupedDates[formattedDate][0]);
+        const nextPrice = findNextPrice(product.priceHistory, groupedDates[formattedDate][0]);
+        
+        // Choose the previous price if available, otherwise use the next price
+        if (previousPrice !== null) {
+          totalPrice += previousPrice[priceType];
+          validProductCount++;
+        } else if (nextPrice !== null) {
+          totalPrice += nextPrice[priceType];
+          validProductCount++;
         }
-      }
-
-      if (priceEntry) {
-        totalPrice += priceEntry[priceType];
-        validProductCount++; // Count products with valid prices
+      } else {
+        // Calculate the average price from the available entries
+        const averagePrice = relevantEntries.reduce((sum, entry) => sum + entry[priceType], 0) / relevantEntries.length;
+        totalPrice += averagePrice;
+        validProductCount++;
       }
     });
 
     if (validProductCount > 0) {
-      // Push the total price for this date
-      totalData.priceHistory.push({ date, [priceType]: totalPrice });
+      aggregatedData.push({ date: formattedDate, [priceType]: totalPrice });
     }
   });
 
-  return totalData;
+  return aggregatedData;
 }
 
+function findPreviousPrice(priceHistory, targetDate) {
+  const target = new Date(targetDate);
+  for (let i = priceHistory.length - 1; i >= 0; i--) {
+    const entryDate = new Date(priceHistory[i].date);
+    if (entryDate <= target) {
+      return priceHistory[i];
+    }
+  }
+  return null; // No previous price found
+}
+
+function findNextPrice(priceHistory, targetDate) {
+  const target = new Date(targetDate);
+  for (let i = 0; i < priceHistory.length; i++) {
+    const entryDate = new Date(priceHistory[i].date);
+    if (entryDate >= target) {
+      return priceHistory[i];
+    }
+  }
+  return null; // No next price found
+}
+
+
+function formatDate(date, interval) {
+  const dateObj = new Date(date);
+  if (interval === "anual") {
+    return dateObj.getFullYear().toString();
+  } else if (interval === "mensal") {
+    return `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+  } else if (interval === "semanal") {
+    const week = getWeekNumber(dateObj);
+    return `${dateObj.getFullYear()}-W${String(week).padStart(2, '0')}`;
+  } else {
+    return date;
+  }
+}
+
+function getWeekNumber(d) {
+  const date = new Date(d);
+  date.setHours(0, 0, 0, 0);
+  date.setDate(date.getDate() + 4 - (date.getDay() || 7));
+  const yearStart = new Date(date.getFullYear(), 0, 1);
+  const weekNo = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+  return weekNo;
+}
 
 
 // Helper function to calculate percentage difference
@@ -382,9 +467,9 @@ function updateTable() {
   const tableBody = document.querySelector("#price-details tbody");
   tableBody.innerHTML = "";  // Clear existing rows
 
-  // Helper function to create rows
-  const formatRow = (name, currentPrice, lastMonth, lastQuarter, sameMonthLastYear) => `
-    <tr>
+  // Helper function to create rows with unique IDs for each product
+  const formatRow = (id, name, currentPrice, lastMonth, lastQuarter, sameMonthLastYear) => `
+    <tr id="row-${id}">
       <td>${name}</td>
       <td>€${currentPrice.toFixed(2)}</td>
       <td>${lastMonth !== '-' ? `${lastMonth}%` : lastMonth}</td>
@@ -428,8 +513,8 @@ function updateTable() {
     totalLastYearDiff += lastYearDiffValue;
     productCount++;
 
-    // Add the row for the current product
-    tableBody.innerHTML += formatRow(product.name, currentPrice, lastMonth, lastQuarter, lastYearDifference);
+    // Add the row for the current product with a unique ID based on the product key
+    tableBody.innerHTML += formatRow(productKey, product.name, currentPrice, lastMonth, lastQuarter, lastYearDifference);
   });
 
   // Calculate the average of the historical differences
@@ -438,8 +523,28 @@ function updateTable() {
   const avgLastYearDiff = productCount > 0 ? (totalLastYearDiff / productCount).toFixed(2) : "N/A";
 
   // Create the row for "Soma dos Preços" with calculated sums and averages
-  tableBody.innerHTML = formatRow("Soma dos Preços", totalCurrentPrice, avgLastMonthDiff, avgThreeMonthsAgoDiff, avgLastYearDiff) + tableBody.innerHTML;
+  tableBody.innerHTML = formatRow("all", "Soma dos Preços", totalCurrentPrice, avgLastMonthDiff, avgThreeMonthsAgoDiff, avgLastYearDiff) + tableBody.innerHTML;
 }
+
+
+function highlightSelectedRow(productKey) {
+  // Remove existing highlights from all rows
+  const allRows = document.querySelectorAll('.price-table tr');
+  allRows.forEach(row => {
+    row.classList.remove('selected-row'); // Remove previous highlight
+  });
+
+  // Get the row corresponding to the selected product key
+  const productRow = document.getElementById(`row-${productKey}`);
+
+  if (productRow) {
+    // Add the 'selected-row' class to the selected product row
+    productRow.classList.add('selected-row');
+  }
+}
+
+
+
 
 
 // Helper function to calculate percentage difference
