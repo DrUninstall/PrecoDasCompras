@@ -142,7 +142,6 @@ select option[disabled] {
   border: 1px solid #dde0ea;
   background-color: #f9fafc;
   height: 48px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08), 0px 4px 8px rgba(0, 0, 0, 0.04);
 }
 
 .segmented-button input[type="radio"] {
@@ -178,6 +177,7 @@ select option[disabled] {
   color: #2b2e4a;
   border-radius: 8px;
   border: 1px solid #8b93ac;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08), 0px 4px 8px rgba(0, 0, 0, 0.04);
 }
 
 /* Secondary segmented button styling */
@@ -208,6 +208,7 @@ select option[disabled] {
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
   margin: 0;
   background-color: #f5f6fa;
   color: #555c76;
@@ -220,6 +221,15 @@ select option[disabled] {
 
 .secondary-segmented-button input[type="radio"] {
   display: none;
+}
+
+.segmented-button input[type="radio"]+label {
+  border-radius: 8px;
+}
+
+.secondary-segmented-button input[type="radio"]+label {
+  border-radius: 8px;
+  height: 32px;
 }
 
 /* Selected option */
