@@ -14,7 +14,7 @@
     <h1>Preço das Compras</h1>
     <p>Acompanhe as variações de preços dos principais produtos ao longo do tempo.</p>
 
-    <!-- Container para alinhar o dropdown e o botão segmentado -->
+    <!-- Product Selector Container -->
     <div class="selector-container">
       <!-- Product Selector -->
       <label for="productSelect">Produto:</label>
@@ -30,19 +30,18 @@
         <option value="pao">Carcaça Portuguesa</option>
         <option value="queijo">Queijo Flamengo Fatiado</option>
       </select>
-
-
-      <!-- Toggle between Price per Unit and Price per Kilogram -->
-      <div class="segmented-button">
-        <input type="radio" id="price" name="priceType" value="price" onchange="updateData()">
-        <label for="price">Preço/Unidade</label>
-
-        <input type="radio" id="pricePerKg" name="priceType" value="pricePerKg" checked onchange="updateData()">
-        <label for="pricePerKg">Preço/Kg</label>
-      </div>
     </div>
-
-    <!-- New Segmented Button for Time Intervals -->
+    
+    <!-- Toggle between Price per Unit and Price per Kilogram -->
+    <div class="segmented-button">
+      <input type="radio" id="price" name="priceType" value="price" onchange="updateData()">
+      <label for="price">Preço/Unidade</label>
+    
+      <input type="radio" id="pricePerKg" name="priceType" value="pricePerKg" checked onchange="updateData()">
+      <label for="pricePerKg">Preço/Kg</label>
+    </div>
+    
+    <!-- Secondary Segmented Button for Time Intervals -->
     <div class="secondary-segmented-button-container">
       <div class="secondary-segmented-button">
         <input type="radio" id="diario" name="timeInterval" value="diario" onchange="updateData()">
