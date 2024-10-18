@@ -418,18 +418,13 @@ canvas {
 .price-table {
   margin-top: 20px;
   border-radius: 8px;
-  /* Rounded corners */
-  overflow: hidden;
-  /* Ensures rounded corners apply to the entire table */
 }
 
 .price-table table {
   width: 100%;
   border-collapse: separate;
-  /* Allows rounded corners */
   border-spacing: 0;
   border-radius: 8px;
-  /* Rounded corners */
 }
 
 /* Highlight selected row */
