@@ -1,15 +1,13 @@
 name: Update Prices Daily
 
-# Run this job daily at midnight UTC (adjust as needed)
 on:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 0 * * *" # Runs daily at midnight UTC
   workflow_dispatch: # Allows manual run
 
 jobs:
   update-prices:
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out the repository
         uses: actions/checkout@v2
@@ -17,7 +15,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "16"
+          node-version: '16' # or your preferred Node.js version
 
       - name: Install dependencies
         run: npm install
@@ -30,7 +28,12 @@ jobs:
           git config --local user.name "GitHub Action"
           git config --local user.email "action@github.com"
           git add .
-          git commit -m "Daily price update $(date +'%Y-%m-%d')"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+          # Check if there are changes to commit
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "Daily price update $(date +'%Y-%m-%d')"
+            git push
+          else
+            echo "No changes to commit"
+          fi
+        shell: bash
