@@ -3,6 +3,10 @@ window.addEventListener("DOMContentLoaded", async () => {
   updateTableHeaders();  // Update headers with dynamic values
   updateData();          // Call existing updateData function to load prices
   updateTable();
+
+  // Ensure the default selected product is highlighted on page load
+  const defaultProduct = document.getElementById("productSelect").value;
+  highlightSelectedRow(defaultProduct); // Highlight the default option's row
 });
 
 // product data
@@ -528,8 +532,9 @@ function updateTable() {
 
 
 function highlightSelectedRow(productKey) {
-  // Remove existing highlights from all rows
   const allRows = document.querySelectorAll('.price-table tr');
+  
+  // Remove existing highlights from all rows
   allRows.forEach(row => {
     row.classList.remove('selected-row'); // Remove previous highlight
   });
@@ -540,8 +545,13 @@ function highlightSelectedRow(productKey) {
   if (productRow) {
     // Add the 'selected-row' class to the selected product row
     productRow.classList.add('selected-row');
+
+    // Move the selected row to the top (just after the header)
+    const tableBody = document.querySelector("#price-details tbody");
+    tableBody.insertBefore(productRow, tableBody.firstChild);  // Move the row to the top of the tbody
   }
 }
+
 
 
 
