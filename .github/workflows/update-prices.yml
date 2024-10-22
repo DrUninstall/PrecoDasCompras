@@ -14,16 +14,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
         node-version: '18'
+
     - name: Install dependencies
       run: npm install
-    - name: Install Chrome for Puppeteer
-      run: npx puppeteer browsers install chrome
+      env:
+        PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
+
     - name: Fetch prices
       run: node fetch_continente_prices.js
+      env:
+        PUPPETEER_EXECUTABLE_PATH: "/usr/bin/google-chrome"
+
     - name: Commit and push changes
       run: |
         git config --local user.name "GitHub Action"
