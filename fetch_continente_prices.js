@@ -32,7 +32,14 @@ async function fetchProductPrice(url) {
 
 async function updatePriceHistory(productKey, productPrice) {
   const filePath = path.resolve(__dirname, `${productKey}_price_history.js`);
-  const history = require(filePath);
+  
+  // Read the file contents as a string
+  const fileContent = fs.readFileSync(filePath, 'utf-8');
+  
+  // Extract the history array from the file (parse the JSON part)
+  const historyString = fileContent.match(/const\s+\w+\s+=\s+(\[.*\]);/s)[1]; // Regex to capture array
+  const history = JSON.parse(historyString);
+
   const lastEntry = history[history.length - 1];
 
   // Check if today's entry already exists
@@ -45,12 +52,16 @@ async function updatePriceHistory(productKey, productPrice) {
   history.push({ date: today, price: productPrice.price, pricePerKg: productPrice.pricePerKg });
 
   // Save updated history back to file
-  const fileContent = `const ${productKey}PriceHistory = ${JSON.stringify(history, null, 2)};\nmodule.exports = ${productKey}PriceHistory;`;
-  fs.writeFileSync(filePath, fileContent);
+  const updatedFileContent = `const ${productKey}PriceHistory = ${JSON.stringify(history, null, 2)};\nmodule.exports = ${productKey}PriceHistory;`;
+  fs.writeFileSync(filePath, updatedFileContent);
+
   console.log(`Updated ${productKey} price history with today's data.`);
 }
 
+
 async function main() {
+  const arrozPrice = await fetchProductPrice(arrozUrl);
+  const massaPrice = await fetchProductPrice(massaUrl);
   const azeitePrice = await fetchProductPrice(azeiteUrl);
   const bolachasPrice = await fetchProductPrice(bolachasUrl);
   const feijaoPrice = await fetchProductPrice(feijaoUrl);
@@ -59,6 +70,8 @@ async function main() {
   const paoPrice = await fetchProductPrice(paoUrl);
   const queijoPrice = await fetchProductPrice(queijoUrl);
 
+  if (arrozPrice) await updatePriceHistory('arroz', arrozPrice);
+  if (massaPrice) await updatePriceHistory('massa', massaPrice);
   if (azeitePrice) await updatePriceHistory('azeite', azeitePrice);
   if (bolachasPrice) await updatePriceHistory('bolachas', bolachasPrice);
   if (feijaoPrice) await updatePriceHistory('feijao', feijaoPrice);
