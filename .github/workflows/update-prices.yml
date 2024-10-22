@@ -13,51 +13,32 @@ jobs:
   update-prices:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the repository
-        uses: actions/checkout@v2
-        with:
-          persist-credentials: true # Allows git push to use the token
+    - uses: actions/checkout@v2
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18'
+    - name: Install dependencies
+      run: npm install
+    - name: Install Chrome for Puppeteer
+      run: npx puppeteer browsers install chrome
+    - name: Fetch prices
+      run: node fetch_continente_prices.js
+    - name: Commit and push changes
+      run: |
+        git config --local user.name "GitHub Action"
+        git config --local user.email "action@github.com"
+        git add .
+        git commit -m "Daily price update $(date +'%Y-%m-%d')" || echo "No changes to commit"
+        git push
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
+    # Optional: List files after script execution
+    - name: List files after script execution
+      run: ls -al
 
-      - name: Install dependencies
-        run: npm install
+    # Optional: Print environment variables
+    - name: Print environment variables
+      run: printenv
 
-      - name: Run the price fetch script
-        run: node fetch_continente_prices.js
-
-      # Debugging step: Check Git status before adding files
-      - name: Check Git status before adding files
-        run: git status
-
-      - name: Commit and push changes
-        run: |
-          git config --local user.name "GitHub Action"
-          git config --local user.email "action@github.com"
-          git add .
-
-          # Debugging step: Check Git status again after adding files
-          git status
-
-          # Check if there are changes to commit
-          if ! git diff --cached --quiet; then
-            git commit -m "Daily price update $(date +'%Y-%m-%d')"
-            git push
-          else
-            echo "No changes to commit"
-          fi
-        shell: bash
-
-      # Optional: List files after script execution
-      - name: List files after script execution
-        run: ls -al
-
-      # Optional: Print environment variables
-      - name: Print environment variables
-        run: printenv
-
-      - name: Clean up and complete
-        run: echo "Price history update completed!"
+    - name: Clean up and complete
+      run: echo "Price history update completed!"
