@@ -5,17 +5,23 @@ on:
     - cron: "0 0 * * *" # Runs daily at midnight UTC
   workflow_dispatch: # Allows manual run
 
+# Add permissions to allow write access
+permissions:
+  contents: write
+
 jobs:
   update-prices:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repository
         uses: actions/checkout@v2
+        with:
+          persist-credentials: true # Allows git push to use the token
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16' # or your preferred Node.js version
+          node-version: '16'
 
       - name: Install dependencies
         run: npm install
@@ -23,7 +29,7 @@ jobs:
       - name: Run the price fetch script
         run: node fetch_continente_prices.js
 
-      # Debugging step: Check if any files have been modified
+      # Debugging step: Check Git status before adding files
       - name: Check Git status before adding files
         run: git status
 
@@ -37,7 +43,7 @@ jobs:
           git status
 
           # Check if there are changes to commit
-          if ! git diff-index --quiet HEAD; then
+          if ! git diff --cached --quiet; then
             git commit -m "Daily price update $(date +'%Y-%m-%d')"
             git push
           else
@@ -45,11 +51,11 @@ jobs:
           fi
         shell: bash
 
-      # Debugging step: List files after script execution
+      # Optional: List files after script execution
       - name: List files after script execution
         run: ls -al
 
-      # Debugging step: Print environment variables
+      # Optional: Print environment variables
       - name: Print environment variables
         run: printenv
 
