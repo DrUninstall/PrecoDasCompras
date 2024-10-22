@@ -23,11 +23,18 @@ jobs:
       - name: Run the price fetch script
         run: node fetch_continente_prices.js
 
+      # Debugging step: Check if any files have been modified
+      - name: Check Git status before adding files
+        run: git status
+
       - name: Commit and push changes
         run: |
           git config --local user.name "GitHub Action"
           git config --local user.email "action@github.com"
           git add .
+
+          # Debugging step: Check Git status again after adding files
+          git status
 
           # Check if there are changes to commit
           if ! git diff-index --quiet HEAD; then
@@ -37,3 +44,14 @@ jobs:
             echo "No changes to commit"
           fi
         shell: bash
+
+      # Debugging step: List files after script execution
+      - name: List files after script execution
+        run: ls -al
+
+      # Debugging step: Print environment variables
+      - name: Print environment variables
+        run: printenv
+
+      - name: Clean up and complete
+        run: echo "Price history update completed!"
