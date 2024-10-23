@@ -713,6 +713,11 @@ const paoPriceHistory = [
     "date": "2024-10-22",
     "price": 0.2,
     "pricePerKg": 2.86
+  },
+  {
+    "date": "2024-10-23",
+    "price": 0.2,
+    "pricePerKg": 2.86
   }
 ];
 module.exports = paoPriceHistory;
