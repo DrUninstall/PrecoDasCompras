@@ -1928,6 +1928,11 @@ const massaPriceHistory = [
     "date": "2024-10-27",
     "price": 0.75,
     "pricePerKg": 1.5
+  },
+  {
+    "date": "2024-10-28",
+    "price": 0.75,
+    "pricePerKg": 1.5
   }
 ];
 module.exports = massaPriceHistory;
