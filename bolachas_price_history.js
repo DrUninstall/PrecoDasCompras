@@ -873,6 +873,11 @@ const bolachasPriceHistory = [
     "date": "2024-10-31",
     "price": 1.69,
     "pricePerKg": 2.11
+  },
+  {
+    "date": "2024-11-01",
+    "price": 1.69,
+    "pricePerKg": 2.11
   }
 ];
 module.exports = bolachasPriceHistory;
