@@ -85,11 +85,36 @@ function displayPriceHistory(productKey) {
     }
 }
 
+function forwardFill(history) {
+  for (let i = 1; i < history.length; i++) {
+    if (history[i].price === null || history[i].price === 0) {
+      history[i].price = history[i - 1] ? history[i - 1].price : history[i].price;
+    }
+    if (history[i].pricePerKg === null || history[i].pricePerKg === 0) {
+      history[i].pricePerKg = history[i - 1] ? history[i - 1].pricePerKg : history[i].pricePerKg;
+    }
+  }
+}
+
+function forwardFillAllProducts() {
+  Object.keys(priceData).forEach(productKey => {
+    forwardFill(priceData[productKey].priceHistory);
+  });
+}
+
+function cleanHistory(history) {
+  return history.filter(entry => entry.price !== null && entry.price !== 0 && entry.pricePerKg !== null && entry.pricePerKg !== 0);
+}
+
+
 
 // Function to update chart and table based on selected product
 function updateData() {
   const productSelect = document.getElementById("productSelect");
   const selectedProduct = productSelect.value;
+
+  // Apply forward fill to all product histories to ensure consistency
+  forwardFillAllProducts();
 
   const selectedPriceType = document.querySelector('input[name="priceType"]:checked').value;
   const selectedTimeInterval = document.querySelector('input[name="timeInterval"]:checked').value;
@@ -111,17 +136,6 @@ function updateData() {
   highlightSelectedRow(selectedProduct);
 }
 
-
-
-
-// Fill missing prices/dates
-function forwardFill(history) {
-  for (let i = 1; i < history.length; i++) {
-    if (history[i].price === null) {
-      history[i].price = history[i - 1].price;
-    }
-  }
-}
 
 function calculateTotalForTable() {
   const tableRows = document.querySelectorAll("#price-details tbody tr:not(.total-row)");
@@ -146,11 +160,11 @@ function calculateTotalForTable() {
     const threeMonthsAgoDiffCell = row.querySelector(".threeMonthsAgoDiff");
     const lastYearDiffCell = row.querySelector(".lastYearDiff");
 
-    // Check if cells are found before attempting to access textContent
-    const currentPrice = currentPriceCell ? parseFloat(currentPriceCell.textContent.replace('€', '').trim()) || 0 : 0;
-    const lastMonthDiff = lastMonthDiffCell ? parseFloat(lastMonthDiffCell.textContent.replace('%', '').trim()) || 0 : 0;
-    const threeMonthsAgoDiff = threeMonthsAgoDiffCell ? parseFloat(threeMonthsAgoDiffCell.textContent.replace('%', '').trim()) || 0 : 0;
-    const lastYearDiff = lastYearDiffCell ? parseFloat(lastYearDiffCell.textContent.replace('%', '').trim()) || 0 : 0;
+    // Since we already applied forward fill, all prices should be valid
+    const currentPrice = currentPriceCell ? parseFloat(currentPriceCell.textContent.replace('€', '').trim()) : 0;
+    const lastMonthDiff = lastMonthDiffCell ? parseFloat(lastMonthDiffCell.textContent.replace('%', '').trim()) : 0;
+    const threeMonthsAgoDiff = threeMonthsAgoDiffCell ? parseFloat(threeMonthsAgoDiffCell.textContent.replace('%', '').trim()) : 0;
+    const lastYearDiff = lastYearDiffCell ? parseFloat(lastYearDiffCell.textContent.replace('%', '').trim()) : 0;
 
     totalData.currentPrice += currentPrice;
     totalLastMonthDiff += lastMonthDiff;
@@ -165,6 +179,7 @@ function calculateTotalForTable() {
 
   return totalData;
 }
+
 
 
 
