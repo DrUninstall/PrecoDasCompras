@@ -1013,6 +1013,11 @@ const feijaoPriceHistory = [
     "date": "2024-12-01",
     "price": 1.19,
     "pricePerKg": 2.29
+  },
+  {
+    "date": "2024-12-02",
+    "price": 1.19,
+    "pricePerKg": 2.29
   }
 ];
 module.exports = feijaoPriceHistory;
