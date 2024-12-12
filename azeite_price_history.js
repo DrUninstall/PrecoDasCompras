@@ -2153,6 +2153,11 @@ const azeitePriceHistory = [
     "date": "2024-12-11",
     "price": 6.99,
     "pricePerKg": 9.32
+  },
+  {
+    "date": "2024-12-12",
+    "price": 6.99,
+    "pricePerKg": 9.32
   }
 ];
 module.exports = azeitePriceHistory;
