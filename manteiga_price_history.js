@@ -1813,6 +1813,11 @@ const manteigaPriceHistory = [
     "date": "2024-12-22",
     "price": 1.99,
     "pricePerKg": 7.96
+  },
+  {
+    "date": "2024-12-23",
+    "price": 1.99,
+    "pricePerKg": 7.96
   }
 ];
 module.exports = manteigaPriceHistory;
