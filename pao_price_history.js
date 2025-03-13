@@ -1398,6 +1398,11 @@ const paoPriceHistory = [
     "date": "2025-03-12",
     "price": null,
     "pricePerKg": null
+  },
+  {
+    "date": "2025-03-13",
+    "price": 0.2,
+    "pricePerKg": 2.86
   }
 ];
 module.exports = paoPriceHistory;
