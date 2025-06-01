@@ -2983,6 +2983,11 @@ const massaPriceHistory = [
     "date": "2025-05-31",
     "price": 0.75,
     "pricePerKg": 1.5
+  },
+  {
+    "date": "2025-06-01",
+    "price": 0.75,
+    "pricePerKg": 1.5
   }
 ];
 module.exports = massaPriceHistory;
