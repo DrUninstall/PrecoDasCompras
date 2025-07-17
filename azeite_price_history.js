@@ -3218,6 +3218,11 @@ const azeitePriceHistory = [
     "date": "2025-07-16",
     "price": 5.79,
     "pricePerKg": 7.72
+  },
+  {
+    "date": "2025-07-17",
+    "price": 5.79,
+    "pricePerKg": 7.72
   }
 ];
 module.exports = azeitePriceHistory;
