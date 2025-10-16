@@ -4513,6 +4513,11 @@ const arrozPriceHistory = [
     "date": "2025-10-15",
     "price": 1.15,
     "pricePerKg": 1.15
+  },
+  {
+    "date": "2025-10-16",
+    "price": 1.15,
+    "pricePerKg": 1.15
   }
 ];
 module.exports = arrozPriceHistory;
