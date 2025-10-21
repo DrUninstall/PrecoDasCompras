@@ -2853,6 +2853,11 @@ const queijoPriceHistory = [
     "date": "2025-10-20",
     "price": 1.89,
     "pricePerKg": 9.45
+  },
+  {
+    "date": "2025-10-21",
+    "price": 1.79,
+    "pricePerKg": 8.95
   }
 ];
 module.exports = queijoPriceHistory;
