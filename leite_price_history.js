@@ -4588,6 +4588,11 @@ const leitePriceHistory = [
     "date": "2025-11-03",
     "price": 0.89,
     "pricePerKg": 0.89
+  },
+  {
+    "date": "2025-11-04",
+    "price": 1,
+    "pricePerKg": 1
   }
 ];
 module.exports = leitePriceHistory;
