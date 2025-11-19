@@ -2643,6 +2643,11 @@ const paoPriceHistory = [
     "date": "2025-11-18",
     "price": 0.2,
     "pricePerKg": 2.86
+  },
+  {
+    "date": "2025-11-19",
+    "price": 0.2,
+    "pricePerKg": 2.86
   }
 ];
 module.exports = paoPriceHistory;
