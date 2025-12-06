@@ -3528,6 +3528,11 @@ const manteigaPriceHistory = [
     "date": "2025-12-05",
     "price": 2.19,
     "pricePerKg": 8.76
+  },
+  {
+    "date": "2025-12-06",
+    "price": 2.19,
+    "pricePerKg": 8.76
   }
 ];
 module.exports = manteigaPriceHistory;
