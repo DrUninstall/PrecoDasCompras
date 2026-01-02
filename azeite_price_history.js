@@ -4058,6 +4058,11 @@ const azeitePriceHistory = [
     "date": "2026-01-01",
     "price": 5.79,
     "pricePerKg": 7.72
+  },
+  {
+    "date": "2026-01-02",
+    "price": 5.79,
+    "pricePerKg": 7.72
   }
 ];
 module.exports = azeitePriceHistory;
