@@ -4393,6 +4393,11 @@ const massaPriceHistory = [
     "date": "2026-03-11",
     "price": 0.75,
     "pricePerKg": null
+  },
+  {
+    "date": "2026-03-12",
+    "price": 0.75,
+    "pricePerKg": null
   }
 ];
 module.exports = massaPriceHistory;
