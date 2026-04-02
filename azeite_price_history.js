@@ -4503,6 +4503,11 @@ const azeitePriceHistory = [
     "date": "2026-04-01",
     "price": null,
     "pricePerKg": null
+  },
+  {
+    "date": "2026-04-02",
+    "price": null,
+    "pricePerKg": null
   }
 ];
 module.exports = azeitePriceHistory;
