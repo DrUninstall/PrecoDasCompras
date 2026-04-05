@@ -3428,6 +3428,11 @@ const feijaoPriceHistory = [
     "date": "2026-04-04",
     "price": null,
     "pricePerKg": null
+  },
+  {
+    "date": "2026-04-05",
+    "price": null,
+    "pricePerKg": null
   }
 ];
 module.exports = feijaoPriceHistory;
