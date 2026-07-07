@@ -4588,6 +4588,11 @@ const manteigaPriceHistory = [
     "date": "2026-07-06",
     "price": null,
     "pricePerKg": null
+  },
+  {
+    "date": "2026-07-07",
+    "price": null,
+    "pricePerKg": null
   }
 ];
 module.exports = manteigaPriceHistory;
