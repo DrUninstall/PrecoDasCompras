@@ -4363,6 +4363,11 @@ const queijoPriceHistory = [
     "date": "2026-08-19",
     "price": null,
     "pricePerKg": null
+  },
+  {
+    "date": "2026-08-20",
+    "price": null,
+    "pricePerKg": null
   }
 ];
 module.exports = queijoPriceHistory;
