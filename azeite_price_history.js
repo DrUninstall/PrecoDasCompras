@@ -5298,6 +5298,11 @@ const azeitePriceHistory = [
     "date": "2026-09-07",
     "price": null,
     "pricePerKg": null
+  },
+  {
+    "date": "2026-09-08",
+    "price": null,
+    "pricePerKg": null
   }
 ];
 module.exports = azeitePriceHistory;
