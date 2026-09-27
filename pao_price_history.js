@@ -4198,6 +4198,11 @@ const paoPriceHistory = [
     "date": "2026-09-26",
     "price": null,
     "pricePerKg": null
+  },
+  {
+    "date": "2026-09-27",
+    "price": null,
+    "pricePerKg": null
   }
 ];
 module.exports = paoPriceHistory;
