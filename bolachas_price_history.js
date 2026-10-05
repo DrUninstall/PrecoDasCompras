@@ -4353,6 +4353,11 @@ const bolachasPriceHistory = [
     "date": "2026-10-04",
     "price": null,
     "pricePerKg": null
+  },
+  {
+    "date": "2026-10-05",
+    "price": null,
+    "pricePerKg": null
   }
 ];
 module.exports = bolachasPriceHistory;
