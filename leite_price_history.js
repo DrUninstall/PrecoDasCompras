@@ -6333,6 +6333,11 @@ const leitePriceHistory = [
     "date": "2026-10-19",
     "price": null,
     "pricePerKg": null
+  },
+  {
+    "date": "2026-10-20",
+    "price": null,
+    "pricePerKg": null
   }
 ];
 module.exports = leitePriceHistory;
